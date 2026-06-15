@@ -1,5 +1,5 @@
 export const instituicoes = [
-  { "id": 1, "nome": "Embrapa Recursos Genéticos e Biotecnologia", "país": "Brasil", "contato": { "e-mails": ["banco@embrapa-rg.br"], "telefones": [556134484000] } },
+  { "id": 1, "nome": "Embrapa Recursos Genéticos e Biotecnologia", "país": "Brasil", "contato": { "e-mails": ["banco@embrapa-rg.br", "diretoria@embrapa-rg.br"], "telefones": [556134484000] } },
   { "id": 2, "nome": "Millennium Seed Bank - Kew Gardens", "país": "Reino Unido", "contato": { "e-mails": ["seedbank@kew.org"], "telefones": [442083325000] } },
   { "id": 3, "nome": "INTA - Instituto Nacional de Tecnología Agropecuaria", "país": "Argentina", "contato": { "e-mails": ["bancosemillas@inta.gob.ar"], "telefones": [541143063000] } },
   { "id": 4, "nome": "USDA National Plant Germplasm System", "país": "Estados Unidos", "contato": { "e-mails": ["npgs@usda.gov"], "telefones": [13012345678] } },

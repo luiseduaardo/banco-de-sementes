@@ -97,6 +97,79 @@ try {
 
     // RENAMECOLLECTION:
     await db.collection("instituicao").rename("instituição");
+
+    // $FUNCTION
+    // Busca as amostras onde o nome comum da semente tem no máximo 5 letras
+    await db.collection("amostra").find({
+        $expr: {
+            $function: {
+                body: "function(nome) { return nome.length <= 5; }",
+                args: ["$semente.nome_comum"],
+                lang: "js"
+            }
+        }
+    });
+
+    // ALL
+    // Busca a instituição que tem ambos esses e-mails cadastrados em contato
+    await db.collection("instituicao").find({
+        "contato.e-mails": { $all: ["banco@embrapa-rg.br", "diretoria@embrapa-rg.br"] }
+    });  
+
+    // FINDONE
+    // Retorna a primeira amostra cadastrada que seja da família "Poaceae"
+    await db.collection("amostra").findOne({ "semente.família": "Poaceae" });
+
+    // $ADDTOSET, UPDATE (UPDATEONE/UPDATEMANY)
+    // Adiciona um e-mail na instituição de id 2
+    await db.collection("instituicao").updateOne(
+        { id: 2 },
+        { $addToSet: { "contato.e-mails": "contactseedbank@kew.org" } },
+    );
+
+    // SAVE (UPDATEONE/INSERTONE)
+    // Atualiza a capacidade da sala Z001 ou salva uma nova se ela não existir
+    await db.collection("sala").updateOne(
+        { id: "Z001" },
+        { $set: { id: "Z001", capacidade: 1500 } },
+        { upsert: true }
+    );
+
+    // $COND
+    // Cria um campo tamanho na busca, se capacidade >= 50000 é grande, caso não, é normal.
+    await db.collection("sala").aggregate([
+        { 
+            $project: {
+                id: 1,
+                tamanho: {
+                    $cond: {
+                        if: { $gte: ["$capacidade", 50000] },
+                        then: "Grande",
+                        else: "Normal"
+                    }
+                }
+            }
+        }
+    ]);
+
+    // $FILTER:
+    // Passa pelo array de telefones e mantém apenas os números maiores que 50000000000
+    await db.collection("instituicao").aggregate([
+        {
+            $project: {
+                nome: 1,
+                telefones_validos: {
+                    $filter: {
+                        input: "$contato.telefones", 
+                        as: "num_telefone",
+                        cond: { $gt: ["$$num_telefone", 50000000000] }
+                    }
+                }
+            }
+        }
+    ]);
+
+
 } catch (err) {
     console.error("Erro encontrado:", err);
 } finally {
