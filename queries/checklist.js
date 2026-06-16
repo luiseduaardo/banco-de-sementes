@@ -13,12 +13,12 @@ try {
 
     // FIND:
     // Mostra as amostras oferecidas pela instituição de id 10
-    const result = await db.collection("amostra").find({ instituicao_id: 10 });
+    const result_amostra = await db.collection("amostra").find({ instituicao_id: 10 });
 
     // PRETTY
     // O pretty() é um método exclusivo do mongosh, mas como estamos rodando por meio dos 
     // drivers do NodeJS, simulamos esse comportamento do pretty por meio do JSON.stringify
-    console.log(JSON.stringify(result, null, 2));
+    console.log(JSON.stringify(result_amostra, null, 2));
     // db.collection("amostra").find({ instituicao_id: 10 }).pretty()
 
     // $SIZE, $EXISTS, COUNT:
@@ -180,6 +180,8 @@ try {
     // MAPREDUCE
     // O método mapReduce foi depreciado, mas poderíamos rodar ele da forma a seguir
     // Calcula o peso total de amostras agrupadas por família
+    
+    /*
     const mapping = function() {
         emit(this.semente.família, this.peso); 
     };
@@ -188,11 +190,12 @@ try {
         return Array.sum(valuesPesos);
     };
 
-    const result = await db.collection("amostra").mapreduce(
+    const result_mapreduce = await db.collection("amostra").mapreduce(
         mapping,
         reduce,
         { out: { inline: 1 } }
     );
+    */
 
 } catch (err) {
     console.error("Erro encontrado:", err);
