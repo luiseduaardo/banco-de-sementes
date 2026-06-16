@@ -31,12 +31,40 @@ Além desses arquivos, temos os seguintes arquivos e diretórios:
 
 ## Modelagem dos dados
 
-### Modelo entidade-relacionamento (ER)
+Antes de realizar a implementação em si no MongoDB, precisamos modelar os dados de acordo com o Modelo Entidade-relacionamento e convertendo isso posteriormente em uma modelagem física. Nesse processo, temos o seguinte resultado:
+
+### Modelagem conceitual
+
+As entidades, ou seja, elementos do mundo real, que estão representadas na nossa modelagem são as seguintes:
+
+1. `Instituição`: Representa a organização parceira fornecedora. Ela é descrita pelos atributos id, nome, país e contato.
+
+2. `Semente`: É o catálogo científico da amostra. Possui o atributo nome comum e um atributo especial composto chamado taxonomia, que se ramifica em família, genero e espécie.
+
+3. `Sala`: Representa o local de armazenamento físico no prédio. Possui o atributo capacidade para definir seu limite de alocação.
+
+Além dessas entidades, possuímos uma entidade associativa para `Amostra` que representa um lote de sementes que pertencem a uma instituição. Essa entidade possui os dados específicos daquele lote que acabou de chegar, que são independentes dos dados biológicos da semente. Seus atributos independentes são: peso, unidades e a data em que esse lote foi fornecido.
+
+Ademais, o modelo também é composto por dois relacionamentos:
+
+1. Relacionamento fornece (1:N)
+- 1 Instituição pode fornecer N Sementes diferentes para o banco de dados. 
+- 1 Semente deve ser fornecida por somente 1 Instituição
+
+2. Relacionamento armazena (N:N)
+- 1 Sala pode armazenar N Amostras
+- 1 Amostra pode ser armazenada por N Salas distintas
+
+Ao final, temos a seguinte modelagem:
+
+![Diagrama entidade-relacionamento](./img/er.jpeg)
 
 ### Implementação física em coleções
-Diferente da implementação que já havíamos feito para o modelo relacional com base no Modelo ER, realizamos uma modelagem projetada para uma estrutura orientada a documentos, implementando aninhamento de objetos (*embedding*) para agrupar informações logicamente relacionadas.
+Diferente da implementação que já havíamos feito para o modelo relacional com base no Modelo ER nos demais projetos, realizamos uma modelagem projetada para uma estrutura orientada a documentos, implementando aninhamento de objetos (*embedding*) para agrupar informações logicamente relacionadas.
 
 As coleções implementadas foram as seguintes:
+
+#### Coleção `Instituição`
 
 ```javascript
 Instituição {
@@ -50,6 +78,8 @@ Instituição {
 	}
 }
 ```
+
+#### Coleção `Amostra`
 
 ```javascript
 Amostra {
@@ -73,6 +103,8 @@ Amostra {
 }
 ```
 
+#### Coleção `Sala`
+
 ```javascript
 Sala {
 	_id: ObjectId
@@ -80,6 +112,8 @@ Sala {
 	capacidade: int
 }
 ```
+
+#### Coleção `Movimentação`
 
 ```javascript
 Movimentação {
